@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Weather"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="790dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="186dp"
+                android:layout_height="wrap_content"
+                android:text="Activity Alert"
+                android:textSize="30dp"
+                android:layout_marginLeft="100dp"/>
+            <Button
+                android:id="@+id/map"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Map"/>
+
+            <TextView
+                android:id="@+id/All_India"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
+                android:layout_marginLeft="-360dp"
+                android:text="All India"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/Your_Location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yout Location"
+                android:layout_marginLeft="10dp"
+                android:textSize="20dp"
+                android:layout_marginTop="100dp"/>
+            <TextView
+                android:id="@+id/Weather_Forecast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weather Forecast"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="100dp"
+                android:textSize="20dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center">
+        <ListView
+            android:id="@+id/listalertcards"
+            android:layout_width="340dp"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/alert_cards"
+            android:background="@drawable/rounded_translucent_bg"/>
+    </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/rounded_translucent_bg">
+        <ImageView
+            android:id="@+id/homeicon"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/home"/>
+        <ImageView
+            android:id="@+id/alerticon"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20sp"
+            android:src="@drawable/alert"
+            android:layout_marginTop="3dp"
+            />
+        <ImageView
+            android:id="@+id/weathericon"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/weather"/>
+        <ImageView
+            android:id="@+id/locationicon"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:src="@drawable/location"
+            android:layout_marginLeft="20sp"/>
+        <ImageView
+            android:id="@+id/accpuntcircle"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:src="@drawable/accountcircle"
+            android:layout_marginLeft="20sp"/>
+    </LinearLayout>
+
+</LinearLayout>

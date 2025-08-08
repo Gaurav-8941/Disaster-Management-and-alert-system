@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:orientation="vertical"
+    android:padding="16dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:text="Location"
+        android:textSize="30dp"
+        android:layout_gravity="center"
+        android:textStyle="bold"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="12dp"
+        card_view:cardElevation="4dp"
+        android:layout_marginBottom="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/subscribeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subscribe Locations"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/subscribeDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subscribe locations to receive timely alerts and advisories issued by Government agencies."
+                android:textSize="14sp"
+                android:layout_marginTop="8dp"
+                android:textColor="#555555" />
+
+            <Button
+                android:id="@+id/btnSubscribe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SUBSCRIBE LOCATIONS"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#1D3557"
+                android:layout_marginTop="12dp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Subscribed Location List -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Subscribed Location List"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#000000" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No locations subscribed."
+            android:textSize="14sp"
+            android:textColor="#555555"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/rounded_translucent_bg"
+        android:layout_marginTop="480dp">
+        <ImageView
+            android:id="@+id/homeicon"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/home"/>
+        <ImageView
+            android:id="@+id/alerticon"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20sp"
+            android:src="@drawable/alert"
+            android:layout_marginTop="3dp"
+            />
+        <ImageView
+            android:id="@+id/weathericon"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/weather"/>
+        <ImageView
+            android:id="@+id/locationicon"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:src="@drawable/location"
+            android:layout_marginLeft="20sp"/>
+        <ImageView
+            android:id="@+id/accpuntcircle"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:src="@drawable/accountcircle"
+            android:layout_marginLeft="20sp"/>
+    </LinearLayout>
+
+</LinearLayout>

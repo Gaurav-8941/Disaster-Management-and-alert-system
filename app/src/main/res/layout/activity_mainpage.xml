@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Mainpage"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:orientation="vertical"
+        android:background="@drawable/border">
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Current Location"
+            android:textSize="40dp"
+            android:layout_marginLeft="40dp"
+            android:textAlignment="center"/>
+        <TextView
+            android:id="@+id/alert"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Alerts"
+            android:textSize="50dp"
+            android:layout_marginStart="20dp"/>
+</LinearLayout>
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="650dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+   <FrameLayout
+        android:id="@+id/allalertmap"
+        android:layout_width="350dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded_translucent_bg">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/alerttext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="View All India Alerts and Weather ->"
+                android:textSize="30dp"/>
+            <ImageView
+                android:id="@+id/alertmap"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+    </FrameLayout>
+        </androidx.cardview.widget.CardView>
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="16dp"
+        android:weightSum="3"
+        android:background="#F2F2F2">
+
+        <!-- First Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/disastrsurvivalguide"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_guide"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Disaster\nSurvival Guide"
+                    android:textAlignment="center"
+                    android:textColor="#000"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Second Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/recenteathquake"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_earthquack" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recent\nEartquakes"
+                    android:textAlignment="center"
+                    android:textColor="#000"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Third Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/shareapp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_share" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Share App"
+                    android:textAlignment="center"
+                    android:textColor="#000"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+           android:layout_marginBottom="24dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/subscribeTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Subscribe Locations"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/subscribeDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Subscribe locations to receive timely alerts and advisories issued by Government agencies."
+                    android:textSize="14sp"
+                    android:layout_marginTop="8dp"
+                    android:textColor="#555555" />
+
+                <Button
+                    android:id="@+id/btnSubscribe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SUBSCRIBE LOCATIONS"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#1D3557"
+                    android:layout_marginTop="12dp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="Dial 112 Emergency"
+                android:textSize="30dp"/>
+
+            <ImageButton
+                android:id="@+id/emergencycall"
+                android:layout_width="53dp"
+                android:layout_height="35dp"
+                android:background="@drawable/call"
+                android:layout_marginStart="70dp" />
+        </LinearLayout>
+    </LinearLayout>
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/rounded_translucent_bg">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@drawable/rounded_translucent_bg"
+            android:layout_marginTop="10dp">
+            <ImageView
+                android:id="@+id/homeicon"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/home"/>
+            <ImageView
+                android:id="@+id/alerticon"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20sp"
+                android:src="@drawable/alert"
+                android:layout_marginTop="3dp"
+                />
+            <ImageView
+                android:id="@+id/weathericon"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/weather"/>
+            <ImageView
+                android:id="@+id/locationicon"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:src="@drawable/location"
+                android:layout_marginLeft="20sp"/>
+            <ImageView
+                android:id="@+id/accpuntcircle"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:src="@drawable/accountcircle"
+                android:layout_marginLeft="20sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

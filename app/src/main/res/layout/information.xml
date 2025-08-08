@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Avalanche"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1E3A5F"
+            android:layout_marginBottom="12dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#DDDDDD" />
+
+        <TextView
+            android:id="@+id/dosLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Do's"
+            android:textColor="#008000"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:id="@+id/dosList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+
+        <TextView
+            android:id="@+id/dontsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Don'ts"
+            android:textColor="#FF0000"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:id="@+id/dontsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <Button
+            android:id="@+id/closeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CLOSE"
+            android:backgroundTint="#1E3A5F"
+            android:textColor="#FFFFFF"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@drawable/rounded_translucent_bg"
+            android:layout_marginTop="590dp">
+            <ImageView
+                android:id="@+id/homeicon"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/home"/>
+            <ImageView
+                android:id="@+id/alerticon"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20sp"
+                android:src="@drawable/alert"
+                android:layout_marginTop="3dp"
+                />
+            <ImageView
+                android:id="@+id/weathericon"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/weather"/>
+            <ImageView
+                android:id="@+id/locationicon"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:src="@drawable/location"
+                android:layout_marginLeft="20sp"/>
+            <ImageView
+                android:id="@+id/accpuntcircle"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:src="@drawable/accountcircle"
+                android:layout_marginLeft="20sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>
