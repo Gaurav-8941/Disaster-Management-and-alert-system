@@ -130,21 +130,21 @@ public class MainActivity5 extends AppCompatActivity {
                 case "Do's and Don't":
                     startActivity(new Intent(this, WhattodoanddontActivity.class));
                     break;
-                case "Helpline":
-                    startActivity(new Intent(this, HelplineActivity.class));
-                    break;
-                    case "Alert Sound":
-                    startActivity(new Intent(this, Alert sound.class));
-                    break;
-                    case "Language":
-                    startActivity(new Intent(this, MainActivity.class));
-                    break;
-                    case "FAQ":
-                    startActivity(new Intent(this, FAQ.class));
-                    break;
-                    case "Sign out":
-                    startActivity(new Intent(this, Sign out.class));
-                    break;
+//                case "Helpline":
+//                    startActivity(new Intent(this, HelplineActivity.class));
+//                    break;
+//                    case "Alert Sound":
+//                    startActivity(new Intent(this, Alert sound.class));
+//                    break;
+//                    case "Language":
+//                    startActivity(new Intent(this, MainActivity.class));
+//                    break;
+//                    case "FAQ":
+//                    startActivity(new Intent(this, FAQ.class));
+//                    break;
+//                    case "Sign out":
+//                    startActivity(new Intent(this, Sign out.class));
+//                    break;
 
             }
         });

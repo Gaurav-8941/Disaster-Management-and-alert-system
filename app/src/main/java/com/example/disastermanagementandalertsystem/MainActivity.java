@@ -14,7 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
-
+//main code from gavaruv
 public class MainActivity extends AppCompatActivity {
     ListView language;
     ArrayList<String> dataList;
