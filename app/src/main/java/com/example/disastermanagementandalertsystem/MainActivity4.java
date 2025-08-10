@@ -21,6 +21,10 @@ public class MainActivity4 extends AppCompatActivity {
         setContentView(R.layout.activity_main4);
         loginbtn4=findViewById(R.id.loginbtn4);
         switchto =findViewById(R.id.switchto);
+<<<<<<< HEAD
+=======
+        editTextid=findViewById(R.id.editTextid);
+>>>>>>> ecfc175 (uploading files)
         loginbtn4.setOnClickListener(v -> {
             Intent mainactivity5 =new Intent(this, MainActivity5.class);
             startActivity(mainactivity5);
