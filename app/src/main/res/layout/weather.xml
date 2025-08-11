@@ -11,7 +11,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="790dp"
+        android:layout_height="match_parent"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
@@ -65,18 +65,19 @@
         <ListView
             android:id="@+id/listalertcards"
             android:layout_width="340dp"
-            android:layout_height="wrap_content"
+            android:layout_height="490sp"
             tools:listitem="@layout/alert_cards"
             android:background="@drawable/rounded_translucent_bg"/>
-    </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="center"
         android:gravity="center"
+        android:layout_marginTop="10sp"
         android:background="@drawable/rounded_translucent_bg">
         <ImageView
             android:id="@+id/homeicon"

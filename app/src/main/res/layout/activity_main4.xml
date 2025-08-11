@@ -28,10 +28,10 @@
         android:id="@+id/editTextid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Enter phone number"
+        android:hint="Enter 10 digit phone number"
         android:background="@color/cardview_light_background"
         android:layout_gravity="center"
-        android:textSize="40dp"
+        android:textSize="30dp"
         android:layout_marginTop="50dp"/>
     <Button
         android:id="@+id/loginbtn4"

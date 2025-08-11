@@ -23,20 +23,20 @@ public class WhattodoanddontActivity extends AppCompatActivity {
         setContentView(R.layout.whattodoanddont);
         doanddont =findViewById(R.id.doanddont);
         ArrayList<String> doanddontlist =new ArrayList<>();
-        doanddontlist.add("Avalanch");
+        doanddontlist.add("Avalanche");
         doanddontlist.add("Cold Wave");
         doanddontlist.add("Cyclone");
         doanddontlist.add("Drought");
-        doanddontlist.add("Earthquacks");
+        doanddontlist.add("Earthquake");
         doanddontlist.add("Fire");
         doanddontlist.add("Flood");
-        doanddontlist.add("Gas and Chemical LEakages");
+        doanddontlist.add("Gas and Chemical Leakages");
         doanddontlist.add("ThunderStorm");
         doanddontlist.add("Landslide");
-        doanddontlist.add("ForestFire");
+        doanddontlist.add("Forest Fire");
         doanddontlist.add("Lightning");
         doanddontlist.add("Tsunami");
-        doanddontlist.add("UrbanFlood");
+        doanddontlist.add("Urban Flood");
         doanddontlist.add("Heat Wave");
         doanddontlist.add("Smog/Air pollution");
         doanddontlist.add("Biological Emergencies");
@@ -45,7 +45,7 @@ public class WhattodoanddontActivity extends AppCompatActivity {
         doanddont.setAdapter(arrayAdapter);
         doanddont.setOnItemClickListener((parent, view, position, id) -> {
             Intent info=new Intent(this, Information.class);
-            info.putExtra("doanddont", doanddontlist.get(position));
+            info.putExtra("disaster", doanddontlist.get(position));
             startActivity(info);
         });
         homeicon=findViewById(R.id.homeicon);

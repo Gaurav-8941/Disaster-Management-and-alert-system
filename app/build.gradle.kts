@@ -40,5 +40,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
     implementation("androidx.cardview:cardview:1.0.0")
+    // Maps SDK for Android
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("androidx.work:work-runtime:2.8.1")
+    implementation("com.googlecode.libphonenumber:libphonenumber:8.13.37")
 }

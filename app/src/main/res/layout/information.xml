@@ -16,7 +16,7 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Avalanche"
+            android:text="Disaster"
             android:textAlignment="center"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -40,6 +40,11 @@
             android:layout_gravity="center"
             android:gravity="center"/>
 
+        <ListView
+            android:id="@+id/dosListView"
+            android:layout_width="match_parent"
+            android:layout_height="250sp" />
+
         <LinearLayout
             android:id="@+id/dosList"
             android:layout_width="match_parent"
@@ -50,14 +55,18 @@
         <TextView
             android:id="@+id/dontsLabel"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
             android:text="Don'ts"
             android:textColor="#FF0000"
             android:textSize="18sp"
-            android:layout_marginTop="16dp"
-            android:textStyle="bold"
-            android:layout_gravity="center"
-            android:gravity="center"/>
+            android:textStyle="bold" />
+        <ListView
+            android:id="@+id/dontListView"
+            android:layout_width="match_parent"
+            android:layout_height="260sp"/>
 
         <LinearLayout
             android:id="@+id/dontsList"

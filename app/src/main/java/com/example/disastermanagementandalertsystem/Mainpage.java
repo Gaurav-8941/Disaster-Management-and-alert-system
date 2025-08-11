@@ -1,9 +1,11 @@
 package com.example.disastermanagementandalertsystem;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,10 +17,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class Mainpage extends AppCompatActivity {
+
+    FrameLayout frameLayout;
     TextView location, alert;
     Button call, btnSubscribe;
     CardView disastrsurvivalguide, recenteathquake;
     ImageView homeicon, accpuntcircle, locationicon, weathericon, alerticon;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,17 +31,20 @@ public class Mainpage extends AppCompatActivity {
         setContentView(R.layout.activity_mainpage);
         location=findViewById(R.id.location);
         alert=findViewById(R.id.alert);
+        frameLayout = findViewById(R.id.map_fragment);
         disastrsurvivalguide=findViewById(R.id.disastrsurvivalguide);
+
        // recenteathquake=findViewById(R.id.recenteathquake);
         disastrsurvivalguide.setOnClickListener(v -> {
             Intent whatdoanddont=new Intent(this, WhattodoanddontActivity.class);
             startActivity(whatdoanddont);
         });
-//        recenteathquake.setOnClickListener(v ->
-//        {
-//            Intent recentearthquake= new Intent(this, RecentEarthquake.class);
-//            startActivity(recentearthquake);
-//        });
+        recenteathquake.setOnClickListener(v ->
+        {
+            Intent recentearthquake= new Intent(this, MapActivity.class);
+            recentearthquake.putExtra("earthquake",true);
+            startActivity(recentearthquake);
+        });
         homeicon=findViewById(R.id.homeicon);
         accpuntcircle=findViewById(R.id.accpuntcircle);
         locationicon=findViewById(R.id.locationicon);
@@ -44,6 +52,7 @@ public class Mainpage extends AppCompatActivity {
         alerticon=findViewById(R.id.alerticon);
         btnSubscribe=findViewById(R.id.btnSubscribe);
         homeicon.setOnClickListener(v ->
+
         {
             Intent home=new Intent(this, Mainpage.class);
             startActivity(home);
@@ -68,6 +77,10 @@ public class Mainpage extends AppCompatActivity {
         {
             Intent location=new Intent(this, Location.class);
             startActivity(location);
+        });
+
+        frameLayout.setOnClickListener(view->{
+            startActivity(new Intent(this, MapActivity.class).putExtra("fragment",true));
         });
     }
 }
