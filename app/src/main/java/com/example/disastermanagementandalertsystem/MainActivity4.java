@@ -33,7 +33,7 @@ public class MainActivity4 extends AppCompatActivity {
             if (!isValid()) {
                 Toast.makeText(this,"Invaild",Toast.LENGTH_LONG);
             }else {
-                Intent mainactivity5 = new Intent(this, MainActivity5.class);
+                Intent mainactivity5 = new Intent(this, Authenticate.class);
                 mainactivity5.putExtra("phone",phone);
                 mainactivity5.putExtra("content",editTextid.getText().toString());
                 startActivity(mainactivity5);

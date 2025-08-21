@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -19,7 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 import java.util.Random;
 
 public class Authenticate extends AppCompatActivity {
-
+    Button submitBtn;
     EditText input;
     String pinCode;
 
@@ -29,6 +30,12 @@ public class Authenticate extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authenticate);
         input = findViewById(R.id.input);
+        submitBtn=findViewById(R.id.submitBtn);
+        submitBtn.setOnClickListener(view ->
+        {
+            Intent intent= new Intent(this, Mainpage.class);
+            startActivity(intent);
+        });
         generateCode();
         validate();
     }

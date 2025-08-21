@@ -72,7 +72,7 @@ public class Information extends AppCompatActivity {
         });
         weathericon.setOnClickListener(v ->
         {
-            Intent weathericon=new Intent(this, Weatheractivity.class);
+            Intent weathericon=new Intent(this, WeatherActivity.class);
             startActivity(weathericon);
         });
         alerticon.setOnClickListener(v ->

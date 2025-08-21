@@ -163,6 +163,7 @@
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/time0"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="11:00"
@@ -176,6 +177,7 @@
                         app:tint="#FFD700" />
 
                     <TextView
+                        android:id="@+id/temp0"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="25.1°"
@@ -190,6 +192,7 @@
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/time1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="12:00"
@@ -203,6 +206,7 @@
                         app:tint="#FFD700" />
 
                     <TextView
+                        android:id="@+id/temp1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="20.0°"
@@ -217,6 +221,7 @@
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/time2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="13:00"
@@ -230,6 +235,7 @@
                         app:tint="#FFD700" />
 
                     <TextView
+                        android:id="@+id/temp2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="26.9°"
@@ -244,6 +250,7 @@
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/time3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="14:00"
@@ -257,6 +264,7 @@
                         app:tint="#FFD700" />
 
                     <TextView
+                        android:id="@+id/temp3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="29.1°"
@@ -271,6 +279,7 @@
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/time4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="15:00"
@@ -284,6 +293,7 @@
                         app:tint="#FFD700" />
 
                     <TextView
+                        android:id="@+id/temp4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="30.1°"

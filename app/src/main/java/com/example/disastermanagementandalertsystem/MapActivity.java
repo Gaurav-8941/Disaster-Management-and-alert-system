@@ -1,27 +1,43 @@
 package com.example.disastermanagementandalertsystem;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.concurrent.TimeUnit;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private Integer []images = {
+            R.drawable.earthquake, R.drawable.tornado,
+            R.drawable.flood,R.drawable.volcano,
+            R.drawable.tsunami,R.drawable.drought
+    };
+
     private GoogleMap mMap;
+    private FusedLocationProviderClient fusedLocationClient;
+    private static final int LOCATION_PERMISSION_REQUEST = 1;
+
     private DisasterDatabaseHelper disasterDatabaseHelper;
     private boolean fromFragment, fromEarthquake;
 
@@ -29,10 +45,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        System.out.println("here ");
         fromEarthquake = getIntent().getBooleanExtra("earthquake",false);
         fromFragment = getIntent().getBooleanExtra("fragment",false);
-
+        System.out.println(fromFragment);
         disasterDatabaseHelper = new DisasterDatabaseHelper(getApplicationContext());
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Schedule the periodic work from the start
         PeriodicWorkRequest fetchWorkRequest =
@@ -74,10 +92,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         int i = 0;
-        do {
+        loadMapData();
+        /*do {
             loadMapData(); // Initial load of map data
             i++;
-        }while (i == 10);
+        }while (i == 10);*/
     }
 
     private void loadMapData() {
@@ -135,17 +154,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     String disasterType = cursor.getString(cursor.getColumnIndexOrThrow("disaster_type"));
 
                     LatLng point = new LatLng(lat, lon);
+                    Log.d("MapDebug", "Adding marker at lat=" + lat + ", lon=" + lon + ", type=" + disasterType);
                     String details = description + " - Alert: " + alertLevel;
 
-                    /*// 1. Get the correct icon resource ID
-                    int markerIcon = getMarkerIconForDisaster(disasterType);*/
+                    // 1. Get the correct icon resource ID
+                    int markerIcon = getMarkerIconForDisaster(disasterType);
 
                     mMap.addMarker(new MarkerOptions()
                                     .position(point)
                                     .title(disasterType.toUpperCase())
                                     .snippet(details)
-//                            .icon(com.google.android.gms.maps.model.BitmapDescriptorFactory.fromResource(markerIcon))); // Set the custom icon here!
-                    );
+                            .icon(com.google.android.gms.maps.model.BitmapDescriptorFactory.fromResource(markerIcon))
+                    ); // Set the custom icon here!);
                 } while (cursor.moveToNext());
 
             } else {
@@ -157,6 +177,26 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             }
         }
     }
+
+    private int getMarkerIconForDisaster(String disasterType) {
+        if(disasterType.equalsIgnoreCase("Earthquake")) {
+            return images[0];
+        }
+        else if (disasterType.equalsIgnoreCase("Tropical Cyclone")) {
+            return images[1];
+        } else if (disasterType.equalsIgnoreCase("Flood")) {
+            return images[2];
+        } else if (disasterType.equalsIgnoreCase("Volcano")) {
+            return images[3];
+        } else if (disasterType.equalsIgnoreCase("Tsunami")) {
+            return images[4];
+        } else if (disasterType.equalsIgnoreCase("Drought")) {
+            return images[5];
+        }
+        else
+            return R.drawable.default_location;
+    }
+
     void onEarthquakeClick(){
         Cursor cursor = disasterDatabaseHelper.getReadableDatabase().rawQuery(
                 "SELECT * FROM " + "disasters" +
@@ -205,4 +245,31 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             }
         }
     }
+
+    public String[] getCurrentLocation() {
+
+        String[] co = new String[2];
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST);
+        }
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            co[0] = String.valueOf(location.getLatitude());
+                            co[1] = String.valueOf(location.getLongitude());
+                        }
+                    }
+                });
+        return co;
+    }
+
+
 }

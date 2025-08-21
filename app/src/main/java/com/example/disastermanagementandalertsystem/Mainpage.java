@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -18,7 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class Mainpage extends AppCompatActivity {
 
-    FrameLayout frameLayout;
+    LinearLayout frameLayout;
     TextView location, alert;
     Button call, btnSubscribe;
     CardView disastrsurvivalguide, recenteathquake;
@@ -34,7 +35,7 @@ public class Mainpage extends AppCompatActivity {
         frameLayout = findViewById(R.id.map_fragment);
         disastrsurvivalguide=findViewById(R.id.disastrsurvivalguide);
 
-       // recenteathquake=findViewById(R.id.recenteathquake);
+        recenteathquake=findViewById(R.id.recenteathquake);
         disastrsurvivalguide.setOnClickListener(v -> {
             Intent whatdoanddont=new Intent(this, WhattodoanddontActivity.class);
             startActivity(whatdoanddont);
@@ -66,7 +67,7 @@ public class Mainpage extends AppCompatActivity {
             startActivity(locationicon);
         });
         weathericon.setOnClickListener(v -> {
-            Intent weathericon=new Intent(this, Weatheractivity.class);
+            Intent weathericon=new Intent(this, WeatherActivity.class);
             startActivity(weathericon);
         });
         alerticon.setOnClickListener(v -> {
