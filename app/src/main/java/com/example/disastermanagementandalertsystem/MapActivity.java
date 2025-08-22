@@ -3,11 +3,15 @@ package com.example.disastermanagementandalertsystem;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
@@ -20,6 +24,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,17 +51,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        System.out.println("here ");
+
         fromEarthquake = getIntent().getBooleanExtra("earthquake",false);
         fromFragment = getIntent().getBooleanExtra("fragment",false);
-        System.out.println(fromFragment);
+
         disasterDatabaseHelper = new DisasterDatabaseHelper(getApplicationContext());
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Schedule the periodic work from the start
+        // Schedule background work
         PeriodicWorkRequest fetchWorkRequest =
                 new PeriodicWorkRequest.Builder(Disaster.class, 15, TimeUnit.MINUTES)
-                        .setInitialDelay(5, TimeUnit.SECONDS) // Add a small delay for the first run
+                        .setInitialDelay(5, TimeUnit.SECONDS)
                         .build();
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
@@ -64,7 +70,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 fetchWorkRequest
         );
 
-        // Observe the work to know when it finishes
         WorkManager.getInstance(this).getWorkInfosForUniqueWorkLiveData("Disaster")
                 .observe(this, workInfos -> {
                     boolean hasFinishedSuccessfully = false;
@@ -76,11 +81,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     }
                     if (hasFinishedSuccessfully && mMap != null) {
                         Log.d("MainActivity", "Worker finished, refreshing map.");
-                        loadMapData(); // Call the new method to refresh the map
+                        loadMapData();
                     }
                 });
 
-        // Get the map fragment and start the map loading process.
+        // Load the map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {
@@ -91,61 +96,60 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        int i = 0;
         loadMapData();
-        /*do {
-            loadMapData(); // Initial load of map data
-            i++;
-        }while (i == 10);*/
     }
 
     private void loadMapData() {
-        if (mMap == null) {
-            return;
-        }
+        if (mMap == null) return;
 
-        mMap.clear(); // Clear old markers before adding new ones
-        if (fromFragment)
-            onFragmentClick();
-        if(fromEarthquake)
-            onEarthquakeClick();
+        mMap.clear(); // Clear old markers
+        if (fromFragment) onFragmentClick();
+        if (fromEarthquake) onEarthquakeClick();
     }
 
-    // Add this helper method inside your MainActivity.java
-/*
-    private int getMarkerIconForDisaster(String disasterType) {
+    // Convert VectorDrawable or PNG into BitmapDescriptor
+    private BitmapDescriptor bitmapFromDrawable(int drawableId, int width, int height) {
+        Drawable drawable = ContextCompat.getDrawable(this, drawableId);
+        if (drawable == null) return null;
+
+        drawable.setBounds(0, 0, width, height);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+    // Return correct icon for disaster type
+    private BitmapDescriptor getMarkerIconForDisaster(String disasterType) {
         if (disasterType == null) {
-            return R.drawable.ic_marker_default;
+            return bitmapFromDrawable(R.drawable.default_location, 80, 80);
         }
 
-        // Using toLowerCase() makes the check case-insensitive
-        switch (disasterType.toLowerCase()) {
-            case "eq": // Earthquake
-                return R.drawable.ic_marker_earthquake;
-            case "fl": // Flood
-                return R.drawable.ic_marker_flood;
-            case "tc": // Tropical Cyclone
-                return R.drawable.ic_marker_cyclone;
-            case "vo": // Volcano
-                return R.drawable.ic_marker_volcano;
-            // Add more cases for other types like "WF" (Wildfire) or "DR" (Drought)
-            default:
-                return R.drawable.ic_marker_default;
+        if (disasterType.equalsIgnoreCase("Earthquake")) {
+            return bitmapFromDrawable(images[0], 80, 80);
+        } else if (disasterType.equalsIgnoreCase("Tropical Cyclone")) {
+            return bitmapFromDrawable(images[1], 80, 80);
+        } else if (disasterType.equalsIgnoreCase("Flood")) {
+            return bitmapFromDrawable(images[2], 80, 80);
+        } else if (disasterType.equalsIgnoreCase("Volcano")) {
+            return bitmapFromDrawable(images[3], 80, 80);
+        } else if (disasterType.equalsIgnoreCase("Tsunami")) {
+            return bitmapFromDrawable(images[4], 80, 80);
+        } else if (disasterType.equalsIgnoreCase("Drought")) {
+            return bitmapFromDrawable(images[5], 80, 80);
+        } else {
+            return bitmapFromDrawable(R.drawable.default_location, 100, 100);
         }
     }
-*/
+
     void onFragmentClick(){
         Cursor cursor = disasterDatabaseHelper.getAllDisasters();
         try {
             if (cursor != null && cursor.moveToFirst()) {
-                Log.d("MapDebug", "Data found in SQLite");
-
-                // Get the first (newest) disaster's location to center the map
                 double newestLat = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LAT));
                 double newestLon = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LON));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(newestLat, newestLon), 4));
 
-                // Loop through all results to place markers
                 do {
                     double lat = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LAT));
                     double lon = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LON));
@@ -154,67 +158,37 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     String disasterType = cursor.getString(cursor.getColumnIndexOrThrow("disaster_type"));
 
                     LatLng point = new LatLng(lat, lon);
-                    Log.d("MapDebug", "Adding marker at lat=" + lat + ", lon=" + lon + ", type=" + disasterType);
                     String details = description + " - Alert: " + alertLevel;
 
-                    // 1. Get the correct icon resource ID
-                    int markerIcon = getMarkerIconForDisaster(disasterType);
+                    BitmapDescriptor markerIcon = getMarkerIconForDisaster(disasterType);
 
                     mMap.addMarker(new MarkerOptions()
-                                    .position(point)
-                                    .title(disasterType.toUpperCase())
-                                    .snippet(details)
-                            .icon(com.google.android.gms.maps.model.BitmapDescriptorFactory.fromResource(markerIcon))
-                    ); // Set the custom icon here!);
+                            .position(point)
+                            .title(disasterType.toUpperCase())
+                            .snippet(details)
+                            .icon(markerIcon));
                 } while (cursor.moveToNext());
 
             } else {
-                Log.d("MapDebug", "No data found in SQLite. Waiting for the worker to run.");
+                Log.d("MapDebug", "No data found in SQLite.");
             }
         } finally {
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
+            if (cursor != null && !cursor.isClosed()) cursor.close();
         }
-    }
-
-    private int getMarkerIconForDisaster(String disasterType) {
-        if(disasterType.equalsIgnoreCase("Earthquake")) {
-            return images[0];
-        }
-        else if (disasterType.equalsIgnoreCase("Tropical Cyclone")) {
-            return images[1];
-        } else if (disasterType.equalsIgnoreCase("Flood")) {
-            return images[2];
-        } else if (disasterType.equalsIgnoreCase("Volcano")) {
-            return images[3];
-        } else if (disasterType.equalsIgnoreCase("Tsunami")) {
-            return images[4];
-        } else if (disasterType.equalsIgnoreCase("Drought")) {
-            return images[5];
-        }
-        else
-            return R.drawable.default_location;
     }
 
     void onEarthquakeClick(){
         Cursor cursor = disasterDatabaseHelper.getReadableDatabase().rawQuery(
-                "SELECT * FROM " + "disasters" +
-                        " WHERE " + "disaster_type" + " = ?" +
-                        " ORDER BY " + "pubDateMillis" + " DESC",
+                "SELECT * FROM disasters WHERE disaster_type = ? ORDER BY pubDateMillis DESC",
                 new String[]{"Earthquake"}
         );
-        ;
+
         try {
             if (cursor != null && cursor.moveToFirst()) {
-                Log.d("MapDebug", "Data found in SQLite");
-
-                // Get the first (newest) disaster's location to center the map
                 double newestLat = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LAT));
                 double newestLon = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LON));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(newestLat, newestLon), 4));
 
-                // Loop through all results to place markers
                 do {
                     double lat = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LAT));
                     double lon = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LON));
@@ -225,29 +199,24 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                     LatLng point = new LatLng(lat, lon);
                     String details = description + " - Alert: " + alertLevel;
 
-                    /*// 1. Get the correct icon resource ID
-                    int markerIcon = getMarkerIconForDisaster(disasterType);*/
+                    BitmapDescriptor markerIcon = getMarkerIconForDisaster(disasterType);
 
                     mMap.addMarker(new MarkerOptions()
-                                    .position(point)
-                                    .title(disasterType.toUpperCase())
-                                    .snippet(details)
-//                            .icon(com.google.android.gms.maps.model.BitmapDescriptorFactory.fromResource(markerIcon))); // Set the custom icon here!
-                    );
+                            .position(point)
+                            .title(disasterType.toUpperCase())
+                            .snippet(details)
+                            .icon(markerIcon));
                 } while (cursor.moveToNext());
 
             } else {
-                Log.d("MapDebug", "No data found in SQLite. Waiting for the worker to run.");
+                Log.d("MapDebug", "No earthquake data found in SQLite.");
             }
         } finally {
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
+            if (cursor != null && !cursor.isClosed()) cursor.close();
         }
     }
 
     public String[] getCurrentLocation() {
-
         String[] co = new String[2];
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED &&
@@ -270,6 +239,4 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 });
         return co;
     }
-
-
 }
