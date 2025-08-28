@@ -6,6 +6,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,6 +23,8 @@ public class Mainpage extends AppCompatActivity {
     LinearLayout frameLayout;
     TextView location, alert;
     Button call, btnSubscribe;
+
+    ImageButton emergency;
     CardView disastrsurvivalguide, recenteathquake;
     ImageView homeicon, accpuntcircle, locationicon, weathericon, alerticon;
     @SuppressLint("MissingInflatedId")
@@ -34,6 +37,7 @@ public class Mainpage extends AppCompatActivity {
         alert=findViewById(R.id.alert);
         frameLayout = findViewById(R.id.map_fragment);
         disastrsurvivalguide=findViewById(R.id.disastrsurvivalguide);
+        emergency = findViewById(R.id.emergencycall);
 
         recenteathquake=findViewById(R.id.recenteathquake);
         disastrsurvivalguide.setOnClickListener(v -> {
@@ -76,12 +80,17 @@ public class Mainpage extends AppCompatActivity {
         });
         btnSubscribe.setOnClickListener(v ->
         {
-            Intent location=new Intent(this, Location.class);
+            Intent location=new Intent(this, location.class);
             startActivity(location);
         });
 
         frameLayout.setOnClickListener(view->{
             startActivity(new Intent(this, MapActivity.class).putExtra("fragment",true));
+        });
+        emergency.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(android.net.Uri.parse("tel:112"));
+            startActivity(intent);
         });
     }
 }

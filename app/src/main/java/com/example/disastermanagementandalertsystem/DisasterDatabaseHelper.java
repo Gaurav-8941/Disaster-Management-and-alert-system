@@ -13,12 +13,20 @@ import java.util.List;
 
 public class DisasterDatabaseHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 5; // Incrementing version to trigger onUpgrade
+    private static final int DATABASE_VERSION = 6; // bumped version for new table
     private static final String DATABASE_NAME = "gdacs.db";
+
+    //disasster table
     public static final String TABLE_NAME = "disasters";
     public static final String COLUMN_LAT = "lat";
     public static final String COLUMN_LON = "lon";
     public static final String COLUMN_PUB_DATE_MILLIS = "pubDateMillis";
+
+    // ----------------- Subscribed Locations Table -----------------
+    private static final String TABLE_SUBSCRIBED = "subscribed_locations";
+    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_USER_LAT = "lat";
+    private static final String COLUMN_USER_LON = "lon";
 
     public DisasterDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -26,11 +34,12 @@ public class DisasterDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Disasters table
         db.execSQL("CREATE TABLE " + TABLE_NAME + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "title TEXT," +
                 "pubDate TEXT UNIQUE," +
-                COLUMN_PUB_DATE_MILLIS + " INTEGER," + // Changed to INTEGER for timestamp
+                COLUMN_PUB_DATE_MILLIS + " INTEGER," + // timestamp
                 "description TEXT," +
                 "population TEXT," +
                 "severity TEXT," +
@@ -42,19 +51,27 @@ public class DisasterDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_LON + " REAL" +
                 ")");
 
-        // Optional indexes for faster queries
+        // Index for faster queries
         db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS idx_pubdate ON " + TABLE_NAME + "(pubDate);");
+
+        // Subscribed locations table
+        db.execSQL("CREATE TABLE " + TABLE_SUBSCRIBED + " (" +
+                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                COLUMN_USER_LAT + " REAL," +
+                COLUMN_USER_LON + " REAL" +
+                ")");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop and recreate to handle schema changes.
+        // Drop and recreate on schema change
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SUBSCRIBED);
         onCreate(db);
     }
 
+    // ----------------- Disasters Logic -----------------
     public void deleteOldDisasters(SQLiteDatabase db) {
-        // Delete entries older than 5 hours using the INTEGER timestamp
         long fiveHoursAgo = System.currentTimeMillis() - (5 * 60 * 60 * 1000);
         try {
             int rowsDeleted = db.delete(TABLE_NAME, COLUMN_PUB_DATE_MILLIS + " < ?", new String[]{String.valueOf(fiveHoursAgo)});
@@ -85,7 +102,33 @@ public class DisasterDatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getAllDisasters() {
         SQLiteDatabase db = this.getReadableDatabase();
-        // Order by the timestamp column for correct sorting
         return db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_PUB_DATE_MILLIS + " DESC", null);
+    }
+
+    // ----------------- Subscribed Locations Logic -----------------
+    public void addSubscribedLocation(double lat, double lon) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO " + TABLE_SUBSCRIBED + " (" +
+                        COLUMN_USER_LAT + ", " + COLUMN_USER_LON + ") VALUES (?, ?)",
+                new Object[]{lat, lon});
+        db.close();
+    }
+
+    public List<LatLng> getSubscribedLocations() {
+        List<LatLng> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_SUBSCRIBED, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                double lat = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_USER_LAT));
+                double lon = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_USER_LON));
+                list.add(new LatLng(lat, lon));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return list;
     }
 }

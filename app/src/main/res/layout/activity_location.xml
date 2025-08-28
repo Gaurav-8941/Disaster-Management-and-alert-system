@@ -6,6 +6,7 @@
     android:background="#F5F5F5"
     android:orientation="vertical"
     android:padding="16dp">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="60dp"
@@ -75,6 +76,7 @@
             android:textColor="#000000" />
 
         <TextView
+            android:id="@+id/locationStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="No locations subscribed."
@@ -83,6 +85,7 @@
             android:layout_marginTop="4dp" />
     </LinearLayout>
 
+    <!-- Bottom nav -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -91,32 +94,36 @@
         android:gravity="center"
         android:background="@drawable/rounded_translucent_bg"
         android:layout_marginTop="480dp">
+
         <ImageView
             android:id="@+id/homeicon"
             android:layout_width="60dp"
             android:layout_height="50dp"
             android:layout_marginLeft="20dp"
             android:src="@drawable/home"/>
+
         <ImageView
             android:id="@+id/alerticon"
             android:layout_width="60dp"
             android:layout_height="50dp"
             android:layout_marginLeft="20sp"
             android:src="@drawable/alert"
-            android:layout_marginTop="3dp"
-            />
+            android:layout_marginTop="3dp"/>
+
         <ImageView
             android:id="@+id/weathericon"
             android:layout_width="60dp"
             android:layout_height="50dp"
             android:layout_marginLeft="20dp"
             android:src="@drawable/weather"/>
+
         <ImageView
             android:id="@+id/locationicon"
             android:layout_width="60dp"
             android:layout_height="50dp"
             android:src="@drawable/location"
             android:layout_marginLeft="20sp"/>
+
         <ImageView
             android:id="@+id/accpuntcircle"
             android:layout_width="60dp"
@@ -124,5 +131,4 @@
             android:src="@drawable/accountcircle"
             android:layout_marginLeft="20sp"/>
     </LinearLayout>
-
 </LinearLayout>

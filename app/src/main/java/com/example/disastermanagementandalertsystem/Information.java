@@ -18,7 +18,7 @@ public class Information extends AppCompatActivity {
 
     ListView dos,donts;
     Button close;
-    ImageView homeicon, accpuntcircle, locationicon, weathericon, alerticon;
+    ImageView homeicon, accountcircle, locationicon, weathericon, alerticon;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -29,7 +29,7 @@ public class Information extends AppCompatActivity {
         String lang = getIntent().getStringExtra("doanddont");
         Toast.makeText(getApplicationContext(),lang,Toast.LENGTH_LONG).show();
         homeicon=findViewById(R.id.homeicon);
-        accpuntcircle=findViewById(R.id.accpuntcircle);
+        accountcircle=findViewById(R.id.accpuntcircle);
         locationicon=findViewById(R.id.locationicon);
         weathericon=findViewById(R.id.weathericon);
         alerticon=findViewById(R.id.alerticon);
@@ -47,7 +47,7 @@ public class Information extends AppCompatActivity {
         dos.setAdapter(doarrayAdapter);
 
         ArrayAdapter<String> dontarrayAdapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dontList);
-        dos.setAdapter(dontarrayAdapter);
+        donts.setAdapter(dontarrayAdapter);
 
 
         close.setOnClickListener(v ->
@@ -60,7 +60,7 @@ public class Information extends AppCompatActivity {
             Intent home=new Intent(this, Mainpage.class);
             startActivity(home);
         });
-        accpuntcircle.setOnClickListener(v ->
+        accountcircle.setOnClickListener(v ->
         {
             Intent accpuntcirlce=new Intent(this, MainActivity5.class);
             startActivity(accpuntcirlce);

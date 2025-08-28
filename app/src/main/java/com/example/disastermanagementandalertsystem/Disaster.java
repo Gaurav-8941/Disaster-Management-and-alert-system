@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -38,12 +37,26 @@ public class Disaster extends Worker {
     @NonNull
     @Override
     public ListenableWorker.Result doWork() {
+
         Context context = getApplicationContext();
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (activeNetwork == null || !activeNetwork.isConnected()) {
-            Log.d(TAG, "No internet connection. Retrying later.");
-            return Result.retry();
+
+        // ✅ Modern + Legacy internet check
+        if (cm != null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                android.net.NetworkCapabilities capabilities =
+                        cm.getNetworkCapabilities(cm.getActiveNetwork());
+                if (capabilities == null) {
+                    Log.d(TAG, "No internet connection. Retrying later.");
+                    return Result.retry();
+                }
+            } else {
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                if (activeNetwork == null || !activeNetwork.isConnected()) {
+                    Log.d(TAG, "No internet connection. Retrying later.");
+                    return Result.retry();
+                }
+            }
         }
 
         DisasterDatabaseHelper dbHelper = new DisasterDatabaseHelper(context);
@@ -67,30 +80,31 @@ public class Disaster extends Worker {
             Document doc = builder.parse(inputStream);
 
             NodeList items = doc.getElementsByTagName("item");
-
             for (int i = 0; i < items.getLength(); i++) {
                 Element item = (Element) items.item(i);
 
+                // Non-namespaced tags
                 String title = getTagValue("title", item);
                 String pubDateStr = getTagValue("pubDate", item);
                 String description = getTagValue("description", item);
 
-                // These are namespaced attributes, not elements
-                String alertLevel = item.getAttributeNS("http://www.gdacs.org", "alertlevel");
-                String severity = item.getAttributeNS("http://www.gdacs.org", "severity");
-                String populationStr = item.getAttributeNS("http://www.gdacs.org", "population");
-                String disasterType = item.getAttributeNS("http://www.gdacs.org", "eventtype");
-                disasterType = getDisasterTypeFromLink(disasterType);
-                String alertScore = item.getAttributeNS("http://www.gdacs.org", "alertscore");
-                String country = item.getAttributeNS("http://www.gdacs.org", "country");
+                // Namespaced tags
+                String populationStr = getTagValueNS("http://www.gdacs.org", "population", item);
+                populationStr = (populationStr.isBlank()) ? "None" : populationStr;
 
-                // Latitude and Longitude are namespaced elements
-                String lat = getTagValueNS(item, "http://www.w3.org/2003/01/geo/wgs84_pos#", "lat");
-                String lon = getTagValueNS(item, "http://www.w3.org/2003/01/geo/wgs84_pos#", "long");
+                String severity = getTagValueNS("http://www.gdacs.org", "severity", item);
+                severity = (severity.isBlank()) ? "None" : severity;
+
+                String disasterType = getTagValueNS("http://www.gdacs.org", "eventtype", item);
+                String alertLevel = getTagValueNS("http://www.gdacs.org", "alertlevel", item);
+                String alertScore = getTagValueNS("http://www.gdacs.org", "alertscore", item);
+                String country = getTagValueNS("http://www.gdacs.org", "country", item);
+
+                String lat = getTagValueNS("http://www.w3.org/2003/01/geo/wgs84_pos#", "lat", item);
+                String lon = getTagValueNS("http://www.w3.org/2003/01/geo/wgs84_pos#", "long", item);
 
                 long pubDateMillis = parsePubDateToMillis(pubDateStr);
 
-                // Insert only if the date is valid and location data is available
                 if (pubDateMillis != -1 && !lat.isEmpty() && !lon.isEmpty()) {
                     ContentValues values = new ContentValues();
                     values.put("title", title);
@@ -106,6 +120,7 @@ public class Disaster extends Worker {
                     values.put("lat", Double.parseDouble(lat));
                     values.put("lon", Double.parseDouble(lon));
 
+                    Log.w(TAG, "Inserting disaster: " + title + ", Type: " + disasterType + ", Lat: " + lat + ", Lon: " + lon);
                     db.insertWithOnConflict(DisasterDatabaseHelper.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
                 }
             }
@@ -125,7 +140,7 @@ public class Disaster extends Worker {
         }
     }
 
-    // Helper method to extract non-namespaced tags
+    // Non-namespaced
     private String getTagValue(String tag, Element element) {
         NodeList list = element.getElementsByTagName(tag);
         if (list.getLength() > 0 && list.item(0).getFirstChild() != null) {
@@ -134,11 +149,11 @@ public class Disaster extends Worker {
         return "";
     }
 
-    // Helper method to extract namespaced elements
-    private String getTagValueNS(@NonNull Element element, String namespace, String tagName) {
-        NodeList list = element.getElementsByTagNameNS(namespace, tagName);
-        if (list.getLength() > 0 && list.item(0).getFirstChild() != null) {
-            return list.item(0).getTextContent();
+    // Namespaced
+    private String getTagValueNS(String namespace, String tag, Element element) {
+        NodeList nodeList = element.getElementsByTagNameNS(namespace, tag);
+        if (nodeList.getLength() > 0 && nodeList.item(0).getFirstChild() != null) {
+            return nodeList.item(0).getTextContent();
         }
         return "";
     }
@@ -147,16 +162,17 @@ public class Disaster extends Worker {
         try {
             SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
             Date date = format.parse(pubDate);
-            return date.getTime();
+            if (date != null) {
+                return date.getTime();
+            }
         } catch (Exception e) {
             Log.e(TAG, "Error parsing pubDate: " + pubDate, e);
-            return -1; // Return -1 to indicate an error
         }
+        return -1;
     }
 
     private String getDisasterTypeFromLink(String eventTypeCode) {
         if (eventTypeCode == null) return "Unknown";
-
         switch (eventTypeCode) {
             case "EQ": return "Earthquake";
             case "TC": return "Tropical Cyclone";
@@ -164,6 +180,7 @@ public class Disaster extends Worker {
             case "VO": return "Volcano";
             case "TS": return "Tsunami";
             case "DR": return "Drought";
+            case "WF": return "Wildfire";
             default: return "Unknown";
         }
     }

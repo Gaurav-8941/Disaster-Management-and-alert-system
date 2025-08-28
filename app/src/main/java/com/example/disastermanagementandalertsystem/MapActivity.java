@@ -1,6 +1,7 @@
 package com.example.disastermanagementandalertsystem;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -30,15 +31,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
-
-    private Integer []images = {
-            R.drawable.earthquake, R.drawable.tornado,
-            R.drawable.flood,R.drawable.volcano,
-            R.drawable.tsunami,R.drawable.drought
-    };
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
@@ -52,13 +48,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        fromEarthquake = getIntent().getBooleanExtra("earthquake",false);
-        fromFragment = getIntent().getBooleanExtra("fragment",false);
+        fromEarthquake = getIntent().getBooleanExtra("earthquake", false);
+        fromFragment = getIntent().getBooleanExtra("fragment", false);
 
         disasterDatabaseHelper = new DisasterDatabaseHelper(getApplicationContext());
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Schedule background work
+        // Schedule periodic worker
         PeriodicWorkRequest fetchWorkRequest =
                 new PeriodicWorkRequest.Builder(Disaster.class, 15, TimeUnit.MINUTES)
                         .setInitialDelay(5, TimeUnit.SECONDS)
@@ -72,20 +68,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
         WorkManager.getInstance(this).getWorkInfosForUniqueWorkLiveData("Disaster")
                 .observe(this, workInfos -> {
-                    boolean hasFinishedSuccessfully = false;
                     for (WorkInfo workInfo : workInfos) {
-                        if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
-                            hasFinishedSuccessfully = true;
-                            break;
+                        if (workInfo.getState() == WorkInfo.State.SUCCEEDED && mMap != null) {
+                            Log.d("MapActivity", "Worker finished, refreshing map.");
+                            loadMapData();
                         }
-                    }
-                    if (hasFinishedSuccessfully && mMap != null) {
-                        Log.d("MainActivity", "Worker finished, refreshing map.");
-                        loadMapData();
                     }
                 });
 
-        // Load the map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {
@@ -102,47 +92,59 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private void loadMapData() {
         if (mMap == null) return;
 
-        mMap.clear(); // Clear old markers
+        mMap.clear();
         if (fromFragment) onFragmentClick();
         if (fromEarthquake) onEarthquakeClick();
+
+        // Always load subscribed user locations
+        loadSubscribedLocations();
     }
 
-    // Convert VectorDrawable or PNG into BitmapDescriptor
-    private BitmapDescriptor bitmapFromDrawable(int drawableId, int width, int height) {
-        Drawable drawable = ContextCompat.getDrawable(this, drawableId);
-        if (drawable == null) return null;
+    /** Convert drawable into scaled bitmap */
+    private BitmapDescriptor bitmapFromDrawable(int resId, int width, int height) {
+        Drawable drawable = ContextCompat.getDrawable(this, resId);
+        if (drawable == null) return BitmapDescriptorFactory.defaultMarker();
 
-        drawable.setBounds(0, 0, width, height);
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
+
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
-    // Return correct icon for disaster type
-    private BitmapDescriptor getMarkerIconForDisaster(String disasterType) {
-        if (disasterType == null) {
-            return bitmapFromDrawable(R.drawable.default_location, 80, 80);
-        }
+    private int getMarkerIconForDisaster(String disasterType) {
+        if (disasterType == null) return R.drawable.default_location;
 
-        if (disasterType.equalsIgnoreCase("Earthquake")) {
-            return bitmapFromDrawable(images[0], 80, 80);
-        } else if (disasterType.equalsIgnoreCase("Tropical Cyclone")) {
-            return bitmapFromDrawable(images[1], 80, 80);
-        } else if (disasterType.equalsIgnoreCase("Flood")) {
-            return bitmapFromDrawable(images[2], 80, 80);
-        } else if (disasterType.equalsIgnoreCase("Volcano")) {
-            return bitmapFromDrawable(images[3], 80, 80);
-        } else if (disasterType.equalsIgnoreCase("Tsunami")) {
-            return bitmapFromDrawable(images[4], 80, 80);
-        } else if (disasterType.equalsIgnoreCase("Drought")) {
-            return bitmapFromDrawable(images[5], 80, 80);
-        } else {
-            return bitmapFromDrawable(R.drawable.default_location, 100, 100);
+        switch (disasterType.trim().toLowerCase()) {
+            case "earthquake":
+            case "eq":
+                return R.drawable.earthquake;
+            case "tropical cyclone":
+            case "cyclone":
+            case "tc":
+                return R.drawable.tornado;
+            case "flood":
+            case "fl":
+                return R.drawable.flood;
+            case "volcano":
+            case "vo":
+                return R.drawable.volcano;
+            case "tsunami":
+                return R.drawable.tsunami;
+            case "drought":
+            case "dr":
+                return R.drawable.drought;
+            case "wildfire":
+            case "wf":
+                return R.drawable.wildfire;
+            default:
+                Log.w("MapActivity", "Unknown disaster type: " + disasterType);
+                return R.drawable.default_location;
         }
     }
 
-    void onFragmentClick(){
+    private void onFragmentClick() {
         Cursor cursor = disasterDatabaseHelper.getAllDisasters();
         try {
             if (cursor != null && cursor.moveToFirst()) {
@@ -151,38 +153,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(newestLat, newestLon), 4));
 
                 do {
-                    double lat = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LAT));
-                    double lon = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LON));
-                    String alertLevel = cursor.getString(cursor.getColumnIndexOrThrow("alertLevel"));
-                    String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
-                    String disasterType = cursor.getString(cursor.getColumnIndexOrThrow("disaster_type"));
-
-                    LatLng point = new LatLng(lat, lon);
-                    String details = description + " - Alert: " + alertLevel;
-
-                    BitmapDescriptor markerIcon = getMarkerIconForDisaster(disasterType);
-
-                    mMap.addMarker(new MarkerOptions()
-                            .position(point)
-                            .title(disasterType.toUpperCase())
-                            .snippet(details)
-                            .icon(markerIcon));
+                    addMarkerFromCursor(cursor);
                 } while (cursor.moveToNext());
-
-            } else {
-                Log.d("MapDebug", "No data found in SQLite.");
             }
         } finally {
-            if (cursor != null && !cursor.isClosed()) cursor.close();
+            if (cursor != null) cursor.close();
         }
     }
 
-    void onEarthquakeClick(){
+    private void onEarthquakeClick() {
         Cursor cursor = disasterDatabaseHelper.getReadableDatabase().rawQuery(
                 "SELECT * FROM disasters WHERE disaster_type = ? ORDER BY pubDateMillis DESC",
                 new String[]{"Earthquake"}
         );
-
         try {
             if (cursor != null && cursor.moveToFirst()) {
                 double newestLat = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LAT));
@@ -190,29 +173,58 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(newestLat, newestLon), 4));
 
                 do {
-                    double lat = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LAT));
-                    double lon = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LON));
-                    String alertLevel = cursor.getString(cursor.getColumnIndexOrThrow("alertLevel"));
-                    String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
-                    String disasterType = cursor.getString(cursor.getColumnIndexOrThrow("disaster_type"));
-
-                    LatLng point = new LatLng(lat, lon);
-                    String details = description + " - Alert: " + alertLevel;
-
-                    BitmapDescriptor markerIcon = getMarkerIconForDisaster(disasterType);
-
-                    mMap.addMarker(new MarkerOptions()
-                            .position(point)
-                            .title(disasterType.toUpperCase())
-                            .snippet(details)
-                            .icon(markerIcon));
+                    addMarkerFromCursor(cursor);
                 } while (cursor.moveToNext());
-
-            } else {
-                Log.d("MapDebug", "No earthquake data found in SQLite.");
             }
         } finally {
-            if (cursor != null && !cursor.isClosed()) cursor.close();
+            if (cursor != null) cursor.close();
+        }
+    }
+
+    private void addMarkerFromCursor(Cursor cursor) {
+        double lat = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LAT));
+        double lon = cursor.getDouble(cursor.getColumnIndexOrThrow(DisasterDatabaseHelper.COLUMN_LON));
+        String alertLevel = cursor.getString(cursor.getColumnIndexOrThrow("alertLevel"));
+        String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+        String disasterType = cursor.getString(cursor.getColumnIndexOrThrow("disaster_type"));
+
+        LatLng point = new LatLng(lat, lon);
+        int markerIcon = getMarkerIconForDisaster(disasterType);
+
+        mMap.addMarker(new MarkerOptions()
+                .position(point)
+                .title(disasterType.toUpperCase())
+                .snippet(description + " - Alert: " + alertLevel)
+                .icon(bitmapFromDrawable(markerIcon, 80, 80))
+        );
+
+        //Check distance to user
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+                if (location != null) {
+                    double userLat = location.getLatitude();
+                    double userLon = location.getLongitude();
+
+                    if (isWithinRadius(userLat, userLon, lat, lon, 1000)) { // 1000 meters = 1km
+                        // Trigger alert activity
+                        Intent intent = new Intent(MapActivity.this, AlertActivity.class);
+                        intent.putExtra("disasterType", disasterType);
+                        intent.putExtra("disasterMessage", description + " (ALERT LEVEL: " + alertLevel + ")");
+                        startActivity(intent);
+                    }
+                }
+            });
+        }
+    }
+
+    // Blue markers for user-subscribed locations
+    private void loadSubscribedLocations() {
+        List<LatLng> subscribed = disasterDatabaseHelper.getSubscribedLocations();
+        for (LatLng loc : subscribed) {
+            mMap.addMarker(new MarkerOptions()
+                    .position(loc)
+                    .title("My Subscribed Location")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         }
     }
 
@@ -239,4 +251,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 });
         return co;
     }
+    private boolean isWithinRadius(double lat1, double lon1, double lat2, double lon2, float radiusMeters) {
+        float[] results = new float[1];
+        Location.distanceBetween(lat1, lon1, lat2, lon2, results);
+        return results[0] <= radiusMeters;
+    }
+
 }
