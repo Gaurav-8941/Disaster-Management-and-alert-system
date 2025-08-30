@@ -1,13 +1,11 @@
 package com.example.disastermanagementandalertsystem;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,68 +14,62 @@ import java.util.ArrayList;
 
 public class Information extends AppCompatActivity {
 
-    ListView dos,donts;
+    ListView dos, donts;
     Button close;
     ImageView homeicon, accountcircle, locationicon, weathericon, alerticon;
 
-    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.information);
-        String lang = getIntent().getStringExtra("doanddont");
-        Toast.makeText(getApplicationContext(),lang,Toast.LENGTH_LONG).show();
-        homeicon=findViewById(R.id.homeicon);
-        accountcircle=findViewById(R.id.accpuntcircle);
-        locationicon=findViewById(R.id.locationicon);
-        weathericon=findViewById(R.id.weathericon);
-        alerticon=findViewById(R.id.alerticon);
+
+        homeicon = findViewById(R.id.homeicon);
+        accountcircle = findViewById(R.id.accpuntcircle);
+        locationicon = findViewById(R.id.locationicon);
+        weathericon = findViewById(R.id.weathericon);
+        alerticon = findViewById(R.id.alerticon);
 
         close = findViewById(R.id.closeButton);
-        dos = findViewById(R.id.dosList);
+        dos = findViewById(R.id.dosListView);
         donts = findViewById(R.id.dontListView);
 
         DisasterDosDont doobj = new DisasterDosDont();
 
-        ArrayList<String>doList = splitPoints(doobj.dosMap.get(getIntent().getStringExtra("disaster")));
-        ArrayList<String>dontList = splitPoints(doobj.dontsMap.get(getIntent().getStringExtra("disaster")));
+        String disaster = getIntent().getStringExtra("disaster");
+        if (disaster == null) disaster = "Earthquake"; // fallback/default
 
-        ArrayAdapter<String> doarrayAdapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, doList);
+        ArrayList<String> doList = splitPoints(doobj.dosMap.get(disaster));
+        ArrayList<String> dontList = splitPoints(doobj.dontsMap.get(disaster));
+
+        ArrayAdapter<String> doarrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, doList);
         dos.setAdapter(doarrayAdapter);
 
-        ArrayAdapter<String> dontarrayAdapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dontList);
+        ArrayAdapter<String> dontarrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dontList);
         donts.setAdapter(dontarrayAdapter);
 
-
-        close.setOnClickListener(v ->
-        {
-            Intent back=new Intent(this, WhattodoanddontActivity.class);
+        close.setOnClickListener(v -> {
+            Intent back = new Intent(this, WhattodoanddontActivity.class);
             startActivity(back);
         });
-        homeicon.setOnClickListener(v ->
-        {
-            Intent home=new Intent(this, Mainpage.class);
+        homeicon.setOnClickListener(v -> {
+            Intent home = new Intent(this, Mainpage.class);
             startActivity(home);
         });
-        accountcircle.setOnClickListener(v ->
-        {
-            Intent accpuntcirlce=new Intent(this, MainActivity5.class);
+        accountcircle.setOnClickListener(v -> {
+            Intent accpuntcirlce = new Intent(this, MainActivity5.class);
             startActivity(accpuntcirlce);
         });
-        locationicon.setOnClickListener(v ->
-        {
-            Intent locationicon=new Intent(this, location.class);
+        locationicon.setOnClickListener(v -> {
+            Intent locationicon = new Intent(this, location.class);
             startActivity(locationicon);
         });
-        weathericon.setOnClickListener(v ->
-        {
-            Intent weathericon=new Intent(this, WeatherActivity.class);
+        weathericon.setOnClickListener(v -> {
+            Intent weathericon = new Intent(this, WeatherActivity.class);
             startActivity(weathericon);
         });
-        alerticon.setOnClickListener(v ->
-        {
-            Intent alerticon=new Intent(this,  Weather.class);
+        alerticon.setOnClickListener(v -> {
+            Intent alerticon = new Intent(this, Weather.class);
             startActivity(alerticon);
         });
     }

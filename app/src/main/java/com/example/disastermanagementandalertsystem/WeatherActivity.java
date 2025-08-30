@@ -139,7 +139,7 @@ public class WeatherActivity extends AppCompatActivity {
                 }
             }
             if (granted) resolveLocationAndFetch();
-            // If denied, we already kicked off a fallback fetch in requestOrFetchWeather()
+            // if denied go to fallback
         }
     }
 

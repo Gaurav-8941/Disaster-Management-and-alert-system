@@ -85,7 +85,6 @@
                 android:padding="16dp"
                 android:weightSum="3">
 
-                <!-- First Card -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/disastrsurvivalguide"
                     android:layout_width="0dp"
@@ -120,7 +119,6 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- Second Card -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/recenteathquake"
                     android:layout_width="0dp"
@@ -148,14 +146,13 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Recent\nEartquakes"
+                            android:text="Recent\nLocation"
                             android:textAlignment="center"
                             android:textColor="#000"
                             android:textSize="14sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- Third Card -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/shareapp"
                     android:layout_width="0dp"

@@ -40,10 +40,6 @@ public class Mainpage extends AppCompatActivity {
         emergency = findViewById(R.id.emergencycall);
 
         recenteathquake=findViewById(R.id.recenteathquake);
-        disastrsurvivalguide.setOnClickListener(v -> {
-            Intent whatdoanddont=new Intent(this, WhattodoanddontActivity.class);
-            startActivity(whatdoanddont);
-        });
         recenteathquake.setOnClickListener(v ->
         {
             Intent recentearthquake= new Intent(this, MapActivity.class);
@@ -91,6 +87,11 @@ public class Mainpage extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_DIAL);
             intent.setData(android.net.Uri.parse("tel:112"));
             startActivity(intent);
+        });
+
+        disastrsurvivalguide.setOnClickListener(v -> {
+            Intent whatdoanddont = new Intent(this, WhattodoanddontActivity.class);
+            startActivity(whatdoanddont);
         });
     }
 }

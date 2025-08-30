@@ -45,13 +45,6 @@
             android:layout_width="match_parent"
             android:layout_height="250sp" />
 
-        <LinearLayout
-            android:id="@+id/dosList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-
-
         <TextView
             android:id="@+id/dontsLabel"
             android:layout_width="wrap_content"
@@ -67,12 +60,6 @@
             android:id="@+id/dontListView"
             android:layout_width="match_parent"
             android:layout_height="260sp"/>
-
-        <LinearLayout
-            android:id="@+id/dontsList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
 
         <Button
             android:id="@+id/closeButton"

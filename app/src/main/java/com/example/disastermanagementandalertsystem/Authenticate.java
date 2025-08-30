@@ -17,6 +17,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class Authenticate extends AppCompatActivity {
@@ -31,21 +32,18 @@ public class Authenticate extends AppCompatActivity {
         setContentView(R.layout.activity_authenticate);
         input = findViewById(R.id.input);
         submitBtn=findViewById(R.id.submitBtn);
-        submitBtn.setOnClickListener(view ->
-        {
-            Intent intent= new Intent(this, Mainpage.class);
-            startActivity(intent);
-        });
-        generateCode();
-        validate();
-    }
 
-    void validate(){
-        if (pinCode == input.getText().toString()){
-            startActivity(new Intent(this, Mainpage.class));
-        }
-        else
-            Toast.makeText(this, "Invalid code", Toast.LENGTH_SHORT).show();
+        generateCode();
+
+        submitBtn.setOnClickListener(view -> {
+            if (input.getText().toString().equals(pinCode)) {
+                Intent intent = new Intent(this, Mainpage.class);
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(this, "Invalid code", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     void generateCode(){
@@ -55,15 +53,13 @@ public class Authenticate extends AppCompatActivity {
 
             try {
                 long phoneNumber = Long.parseLong(String.valueOf(content));
-                // 2. Generate a random 6-digit PIN
+
                 Random random = new Random();
-                int pin = 100000 + random.nextInt(900000); // Ensures a 6-digit number
+                int pin = 100000 + random.nextInt(900000);
                 pinCode = String.valueOf(pin);
 
-                // 3. Create the SMS message
                 String message = "Your verification code is: " + pinCode;
 
-                // 4. Get the default SmsManager and send the text
                 SmsManager smsManager = SmsManager.getDefault();
                 smsManager.sendTextMessage(content, null, message, null, null);
 
@@ -76,12 +72,11 @@ public class Authenticate extends AppCompatActivity {
             }
         }else {
             try {
-                // 2. Generate a random 6-digit PIN
+
                 Random random = new Random();
                 int pin = 100000 + random.nextInt(900000); // Ensures a 6-digit number
                 pinCode = String.valueOf(pin);
 
-                // 3. Create the SMS message
                 String message = "Your verification code is: " + pinCode;
 
                 composeEmail(this,content,"Verification",message);

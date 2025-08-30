@@ -31,10 +31,10 @@
             android:text="v1.0.0\n------------------------------------------------------------------------------"
             android:layout_marginLeft="50sp"/>
         <TextView
-            android:id="@+id/phonenumber"
+            android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Number here"
+            android:text="9209434152"
             android:textSize="30dp"
             android:layout_marginLeft="150sp"
             android:layout_marginTop="-80dp"

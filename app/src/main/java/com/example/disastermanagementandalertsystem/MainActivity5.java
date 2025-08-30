@@ -44,28 +44,30 @@ public class MainActivity5 extends AppCompatActivity {
                 case 0:
                     startActivity(new Intent(this, Mainpage.class));
                     break;
-                case 1: // Helpline (placeholder)
+                case 1:
                     Intent intent = new Intent(Intent.ACTION_DIAL);
                     intent.setData(android.net.Uri.parse("tel:112"));
                     startActivity(intent);
                     Toast.makeText(this, "Helpline number is dialed", Toast.LENGTH_SHORT).show();
                     break;
-                case 2: // Alert sound
+                case 2:
                     Toast.makeText(this, "Buzzer is only available for now", Toast.LENGTH_SHORT).show();
                     break;
-                case 3: // Language
+                case 3:
                     startActivity(new Intent(this, MainActivity.class));
                     break;
-                case 4: // Do's & Don'ts
-                    startActivity(new Intent(this, WhattodoanddontActivity.class));
+                case 4:
+                    Intent infoIntent = new Intent(this, Information.class);
+                    infoIntent.putExtra("disaster", "Earthquake");
+                    startActivity(infoIntent);
                     break;
-                case 5: // FAQ
+                case 5:
                     Toast.makeText(this, "FAQ screen not implemented yet", Toast.LENGTH_SHORT).show();
                     break;
-                case 6: // About us
+                case 6:
                     Toast.makeText(this, "About Us: Safety app made by Gaurav", Toast.LENGTH_SHORT).show();
                     break;
-                case 7: // Sign out
+                case 7:
                     startActivity(new Intent(this, MainActivity4.class));
                     finishAffinity();
                     break;
